@@ -9,3 +9,4 @@ Stat = df[['state','tot_cases']].groupby(['state']).sum()
 print(Stat)
 Stat2 = df[['state','tot_death']].groupby(['state']).sum()
 print(Stat2)
+#test
