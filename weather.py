@@ -46,8 +46,9 @@ def database(lst_tuple):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     conn = sqlite3.connect(dir_path + "/weather_data.db")
     cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS weather ')
-    cur.execute('CREATE TABLE weather(id INTEGER PRIMARY KEY, temperature FLOAT, date TEXT )')
+    #cur.execute('DROP TABLE IF EXISTS weather ')
+    #cur.execute('DROP TABLE weather')
+    cur.execute('CREATE TABLE IF NOT EXISTS weather(id INTEGER PRIMARY KEY, temperature FLOAT, date TEXT )')
     count = 0
     for g in range(0,4):
         for i in range(count,count+25):
@@ -56,8 +57,18 @@ def database(lst_tuple):
             cur.execute('INSERT INTO weather(id,temperature,date) VALUES(?,?,?)',(i,temp,date))
         conn.commit()
         count+=25
+        #if count > 25:
+            #print("There should only be 25 entries")
+            #break
+        print(g)
     print("done")
+    curr.execute('SELECT temperature FROM weather WHERE date BETWEEN date(2020-03-01) AND date(2020-03-31)'
+    print(cur.fetchall())
+    #return cur,conn
 
+#def averages(cur,conn):
+    #conn.execute("SELECT * FROM weather WHERE date = ?")
+    #print(conn.fetchall())
 
             
 
@@ -65,6 +76,8 @@ def database(lst_tuple):
 
 lst=get_data()
 database(lst)
-
+#conn = database(lst)
+#cur = database(lst)
+#averages(cur,conn)
 
 
