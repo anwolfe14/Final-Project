@@ -13,7 +13,8 @@ def get_data():
     cur = conn.cursor()
     #cur.execute('DROP TABLE IF EXISTS weather ')
     #cur.execute('DROP TABLE weather')
-    cur.execute('CREATE TABLE IF NOT EXISTS weather(id INTEGER PRIMARY KEY, temperature FLOAT, date TEXT, humidity FLOAT )')
+    #cur.execute('CREATE TABLE IF NOT EXISTS Dates ("date" TEXT UNIQUE, "date_id" INTEGER UNIQUE, PRIMARY KEY("date_id" AUTOINCREMENT))')
+    cur.execute('CREATE TABLE IF NOT EXISTS weather("id" INTEGER UNIQUE PRIMARY KEY , "temperature" FLOAT, "date" TEXT, "humidity" FLOAT)')
     cursor = cur.execute('SELECT * FROM weather')
     count = len(cursor.fetchall())    
     c_code  = "44418"  
@@ -101,7 +102,7 @@ def get_data():
     # cursor = cur.execute('SELECT * FROM weather')
     # count = len(cursor.fetchall())
     # print(count)
-    i = 0
+    i = 1
     for tup in lst_tuple:
         try:
             #print(tuple)
