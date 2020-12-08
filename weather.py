@@ -6,14 +6,14 @@ import datetime
 import matplotlib.pyplot as plt
 #https://www.metaweather.com/api/
 #denver woe_id : 2391279
-# This was used to solve some of the fomrating from the api https://docs.python.org/3/library/datetime.html
+# This was used to solve some of the formating from the api https://docs.python.org/3/library/datetime.html
 def get_data():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     conn = sqlite3.connect(dir_path + "/weather_data.db")
     cur = conn.cursor()
     #cur.execute('DROP TABLE IF EXISTS weather ')
     #cur.execute('DROP TABLE weather')
-    cur.execute('CREATE TABLE IF NOT EXISTS weather(id INTEGER PRIMARY KEY, temperature FLOAT, date TEXT )')
+    cur.execute('CREATE TABLE IF NOT EXISTS weather(id INTEGER PRIMARY KEY, temperature FLOAT, date TEXT, humidity FLOAT )')
     cursor = cur.execute('SELECT * FROM weather')
     count = len(cursor.fetchall())    
     c_code  = "44418"  
@@ -28,6 +28,7 @@ def get_data():
     #cur = conn.cursor()
     lst_date = []
     lst_temps= []
+    lst_humidity = []
     if count <= 75:
         for i in date[count:count+25]:
             #print(i)
@@ -52,6 +53,7 @@ def get_data():
                 
                     lst_temps.append(dict_list[0]['max_temp']) 
                     lst_date.append(dict_list[0]['applicable_date'])
+                    lst_humidity.append(dict_list[0]['humidity'])
                 except:
                     None#print(data)
     else:
@@ -64,7 +66,7 @@ def get_data():
             if datetime.datetime.strptime(i, "%Y/%m/%d").strftime("%Y-%m-%d") in lst:
                 print("found duplicate")
             else:
-                base_url    = "https://www.metaweather.com/api/location/{}/{}/"    
+                base_url = "https://www.metaweather.com/api/location/{}/{}/"    
                 request_url = base_url.format(c_code, i)    
                 r = requests.get(request_url)    
                 data = r.text
@@ -75,11 +77,12 @@ def get_data():
                 
                     lst_temps.append(dict_list[0]['max_temp']) 
                     lst_date.append(dict_list[0]['applicable_date'])
+                    lst_humidity.append(dict_list[0]['humidity'])
                 except:
                     None  
         #print(dict_list[0]['max_temp'])  
         # return list of tuples with dates   
-    lst_tuple = list(zip(lst_temps,lst_date))
+    lst_tuple = list(zip(lst_temps,lst_date,lst_humidity))
     #print(lst)
     #print(lst2)
     #print(lst_tuple)
@@ -104,7 +107,8 @@ def get_data():
             #print(tuple)
             temp = ((tup[0])*1.8) + 32
             date = tup[1]
-            cur.execute('INSERT INTO weather(id,temperature,date) VALUES(?,?,?)',(i+count,temp,date))
+            humid = tup[2] 
+            cur.execute('INSERT INTO weather(id,temperature,date,humidity) VALUES(?,?,?,?)',(i+count,temp,date,humid))
             i+=1
         except:
             None
