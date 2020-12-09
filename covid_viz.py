@@ -10,7 +10,7 @@ import os
 import sqlite3
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-conn = sqlite3.connect(dir_path + "/Covid_data.db")
+conn = sqlite3.connect(dir_path + "/weather_data.db")
 cur = conn.cursor()
 cur.execute("SELECT * FROM weather WHERE temperature >= 0")
 name_id = cur.fetchall()
@@ -59,6 +59,24 @@ for tup in name_id:
     elif month == 6:
         june_humid_lst.append(temperature)
 
+    
+# for i in name_id[:31]:
+#     march_lst.append(i[0])
+# for i in march_lst:
+#     sum_march+=float(i)
+# for i in name_id[31:61]:
+#     april_lst.append(i[0])
+
+# for i in april_lst:
+#     sum_april+=float(i)
+# for i in name_id[61:89]:
+#     may_lst.append(i[0])
+# for i in may_lst:
+#     sum_may+=float(i)
+# for i in name_id[89:100]:
+#     june_lst.append(i[0])
+# for i in june_lst:
+#     sum_june+=float(i)
 avg_march = sum(march_lst) / (len(march_lst))
 avg_april = sum(april_lst) / (len(april_lst))
 avg_may = sum(may_lst) / (len(may_lst))
@@ -75,7 +93,13 @@ print(avg_march_humid)
 print(avg_april_humid)
 print(avg_may_humid)
 print(avg_june_humid)
+#create a csv file that has headers as month names in temperature type
+# columns months and the averages 
 
+#look up box plot
+#pyplot can be easier to use 
+#add labels to x and y axis 
+# name of csv file  
 filename = "weather_avgs.csv"
 title = ['Average monthly temperatures in fahrenheit for ']
 fields = ['March,' 'April,' 'May,' 'June']
@@ -84,14 +108,21 @@ march = (avg_march)
 april = (avg_april)
 may = (avg_may)
 june = (avg_june)
-month_name = ['March', 'April', 'May', 'June']
+humid_march =(avg_march_humid)
+humid_april =(avg_april_humid)
+humid_may =(avg_may_humid)
+humid_june =(avg_june_humid)
+month_name = ['Type','March', 'April', 'May', 'June']
 # writing to csv file  
 with open(filename, 'w') as csvfile:  
     # creating a csv writer object  
     #csvwriter = csv.writer(csvfile)     
     csvwriter = csv.DictWriter(csvfile,fieldnames=month_name)  
     csvwriter.writeheader()
-    csvwriter.writerow({'March':round(march),'April':round(april),'May':round(may),'June':round(june)})
+    #csvwriter.writerow("Monthly Temperature Averages in Fahrenheit")
+    csvwriter.writerow({'Type':"temperature averages",'March':round(march),'April':round(april),'May':round(may),'June':round(june)})
+    csvwriter.writerow({'Type':"humidity averages",'March':round(humid_march),'April':round(humid_april),'May':round(humid_may),'June':round(humid_june)})
+
 plt.title("Monthly Average Temperatures in Colorado ")
 plt.xlabel("Months")
 plt.ylabel("Temperature in Fahrenheit")
@@ -103,93 +134,3 @@ plt.plot(dev_x, dev_y2, 'k--', label='Humidity')
 plt.legend()
 plt.grid(True)
 plt.show()
-
-dir_path = os.path.dirname(os.path.realpath(__file__))   
-conn = sqlite3.connect(dir_path + "/Covid_data.db")
-cur = conn.cursor()
-cur.execute("SELECT Covid.cases FROM Covid WHERE cases >= 0")
-name_id = cur.fetchall()
-march_covid = []
-march_sum = 0
-march_average = 0
-april_covid = []
-april_sum = 0
-april_average = 0
-june_covid = []
-june_sum = 0
-june_average = 0
-may_covid = []
-may_sum = 0
-may_average = 0
-for i in (name_id[:30]):
-    march_covid.append(i[0])
-for i in march_covid:
-    march_sum+=i
-march_average = march_sum / len(march_covid)
-for i in (name_id[31:61]):
-    april_covid.append(i[0])
-for i in april_covid:
-    april_sum+=i
-april_average = april_sum / len(april_covid)
-for i in (name_id[62:92]):
-    may_covid.append(i[0])
-for i in may_covid:
-    may_sum+=i
-may_average = may_sum / len(may_covid)
-for i in (name_id[93:100]):
-    june_covid.append(i[0])
-for i in june_covid:
-    june_sum+=i
-cur.execute("SELECT Covid.deaths FROM Covid WHERE deaths >= 0")
-name_id_death = cur.fetchall()
-march_covid_death = []
-march_sum_death = 0
-march_average_death = 0
-april_covid_death = []
-april_sum_death = 0
-april_average_death = 0
-june_covid_death = []
-june_sum_death = 0
-june_average_death = 0
-may_covid_death = []
-may_sum_death = 0
-may_average_death = 0
-for i in (name_id_death[:30]):
-    march_covid_death.append(i[0])
-for i in march_covid:
-    march_sum+=i
-march_average_death = march_sum_death / len(march_covid_death)
-for i in (name_id_death[31:61]):
-    april_covid_death.append(i[0])
-for i in april_covid_death:
-    april_sum_death+=i
-april_average_death = april_sum_death / len(april_covid_death)
-for i in (name_id_death[62:92]):
-    may_covid_death.append(i[0])
-for i in may_covid_death:
-    may_sum_death+=i
-may_average_death = may_sum_death / len(may_covid_death)
-for i in (name_id_death[93:100]):
-    june_covid_death.append(i[0])
-for i in june_covid_death:
-    june_sum_death+=i
-june_average_death = june_sum_death / len(june_covid_death)
-
-    
-plt.title("Covid Cases Colorado")
-plt.xlabel("Months")
-plt.ylabel("Confirmed Cases")
-dev_x = ['March','April','May','June']
-dev_y =[march_average,april_average,may_average,june_average]
-dev_y2 =[march_average_death,april_average_death,may_average_death,june_average_death]
-plt.plot(dev_x, dev_y, label='Average Cases per day')
-plt.plot(dev_x, dev_y2, label='Average Deaths per day')
-plt.legend()
-plt.grid()
-plt.show()
-with open(filename, 'w') as csvfile:  
-    # creating a csv writer object  
-    #csvwriter = csv.writer(csvfile)     
-    csvwriter = csv.DictWriter(csvfile,fieldnames=month_name)  
-    csvwriter.writeheader()
-    csvwriter.writerow({'March':round(march),'April':round(april),'May': round(may),'June':(round(june))})
