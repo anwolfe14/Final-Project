@@ -9,12 +9,13 @@ import json
 import os
 import sqlite3
 
+#this file finds the monthly temperature averages and monthly humidity averages in Colorado 
 dir_path = os.path.dirname(os.path.realpath(__file__))   
-conn = sqlite3.connect(dir_path + "/Covid_data.db")
+conn = sqlite3.connect(dir_path + "/Covid_data.db")#opens database
 cur = conn.cursor()
-cur.execute("SELECT * FROM weather WHERE temperature >= 0")
+cur.execute("SELECT * FROM weather WHERE temperature >= 0") #selects positive temperatures from the weather table
 name_id = cur.fetchall()
-march_lst = []
+march_lst = [] #these lists will store the temperatures for each month
 april_lst = []
 may_lst = []
 june_lst = []
@@ -26,48 +27,50 @@ avg_may = 0
 sum_may = 0
 avg_june = 0
 sum_june = 0
-for tup in name_id:
+for tup in name_id: #this "for" statement takes the full date from the weather table and selects each month off of a numerical value.
     date = tup[2]
     date_lst = date.split('-')
     temperature = float(tup[1])
     month = int(date_lst[1])
-    if month == 3:
+    if month == 3: #selects march
         march_lst.append(temperature)
-    elif month == 4:
+    elif month == 4: #selects april
         april_lst.append(temperature)
-    elif month == 5:
+    elif month == 5:#selects may
         may_lst.append(temperature)
-    elif month == 6:
+    elif month == 6: #selects june
         june_lst.append(temperature)
-march_humid_lst = []
+march_humid_lst = [] #these lists will store humidity values for each month
 april_humid_lst = []
 may_humid_lst = []
 june_humid_lst = []
 cur.execute("SELECT * FROM weather WHERE humidity >= 0")
 name_id = cur.fetchall()
-for tup in name_id:
+for tup in name_id: #this "for" statement takes the full date from the weather table and selects each month off of a numerical value.
     date = tup[2]
     date_lst = date.split('-')
     temperature = float(tup[3])
     month = int(date_lst[1])
-    if month == 3:
+    if month == 3:#selects march
         march_humid_lst.append(temperature)
-    elif month == 4:
+    elif month == 4:#selects april
         april_humid_lst.append(temperature)
-    elif month == 5:
+    elif month == 5:#selects may
         may_humid_lst.append(temperature)
-    elif month == 6:
+    elif month == 6:#selects june
         june_humid_lst.append(temperature)
-avg_march = sum(march_lst) / (len(march_lst))
+###this section calculates the averages for both temperature and humidity for each month 
+avg_march = sum(march_lst) / (len(march_lst)) #these calculate the average temperature for each month
 avg_april = sum(april_lst) / (len(april_lst))
 avg_may = sum(may_lst) / (len(may_lst))
 avg_june = sum(june_lst) / (len(june_lst))
 
-avg_march_humid = sum(march_humid_lst) / (len(march_humid_lst))
+avg_march_humid = sum(march_humid_lst) / (len(march_humid_lst)) #these calculate the average humidity for each month
 avg_april_humid = sum(april_humid_lst) / (len(april_humid_lst))
 avg_may_humid = sum(may_humid_lst) / (len(may_humid_lst))
 avg_june_humid = sum(june_humid_lst) / (len(june_humid_lst))
 
+###This section will store the calculated averages and store them into a csv file
 filename = "weather_avgs.csv"
 title = ['Average monthly temperatures in fahrenheit for ']
 fields = ['March,' 'April,' 'May,' 'June']
@@ -90,7 +93,8 @@ with open(filename, 'w') as csvfile:
     #csvwriter.writerow("Monthly Temperature Averages in Fahrenheit")
     csvwriter.writerow({'Type':"temperature averages",'March':round(march),'April':round(april),'May':round(may),'June':round(june)})
     csvwriter.writerow({'Type':"humidity averages",'March':round(humid_march),'April':round(humid_april),'May':round(humid_may),'June':round(humid_june)})
-
+    
+###This section creates a line chart for the average temperature and humidity for each month
 plt.title("Monthly Average Temperatures in Colorado ")
 plt.xlabel("Months")
 plt.ylabel("Temperature in Fahrenheit")
