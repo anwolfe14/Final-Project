@@ -13,6 +13,7 @@ import sqlite3
 ## Grabing data from the following api: https://data.cdc.gov/resource/9mfq-cb36.json?$$app_token=vUO9dTV5pir6UBXemfD6uL8lZ. After this, create a table named Covid with the follpwing columns: date_id (integer), state (text), cases (integer), deaths (integer). 
 ##Create a table named Dates with the following columns: date (text unique), date_id (Integer, primary key). Grab the data from the API and insert it into the table.
 ##Associate two tables with a key using the date_id. Lastly, make sure to only insert 25 data points per run. 
+# weather api: https://www.metaweather.com/api/
 def create_table_Colorado():
     api_2 = 'https://data.cdc.gov/resource/9mfq-cb36.json?$$app_token=vUO9dTV5pir6UBXemfD6uL8lZ'
     response_2 = (requests.get(api_2).json())
